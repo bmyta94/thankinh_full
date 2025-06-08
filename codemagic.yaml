@@ -1,35 +1,37 @@
 workflows:
-  ios-sim-clean:
-    name: Build iOS Debug Clean (Simulator)
+  ios-debug-simulator:
+    name: iOS Debug Build (Simulator)
     environment:
       flutter: stable
       xcode: latest
-    cache:
-      cache_paths: [] # Không dùng cache để tránh lỗi lặp lại
-
     scripts:
-      - name: Clean iOS Build + Pod Cache
+      - name: Clean and prepare project
         script: |
+          #!/usr/bin/env bash
           flutter clean
           rm -rf ios/Pods
           rm -rf ios/.symlinks
           rm -rf ios/Flutter/Flutter.framework
           rm -rf ios/Flutter/Generated.xcconfig
           rm -rf ios/Podfile.lock
+
           cd ios
           pod deintegrate || true
           pod cache clean --all
-          rm -rf ~/Library/Developer/Xcode/DerivedData/*
           cd ..
 
-      - name: Get Flutter Packages
-        script: flutter pub get
+          flutter pub get
 
-      - name: Re-install CocoaPods
-        script: |
           cd ios
           pod install --repo-update
           cd ..
-
+      
       - name: Build iOS Debug (Simulator)
-        script: flutter build ios --debug --no-codesign --simulator
+        script: |
+          #!/usr/bin/env bash
+          flutter build ios --debug --no-codesign --simulator
+
+    artifacts:
+      - build/ios/**/*.app
+
+    
