@@ -1,7 +1,8 @@
+
 name: thankinh_pex
 description: Ứng dụng theo dõi thay huyết tương (PEX) nội bộ.
 
-publish_to: "none" # Không publish lên pub.dev
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -32,3 +33,8 @@ flutter:
 
   assets:
     - assets/
+
+  plugin:
+    platforms:
+      ios:
+        pluginClass: FilePickerPlugin
