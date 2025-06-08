@@ -1,27 +1,26 @@
 workflows:
-  ios-workflow:
-    name: Build iOS
+  ios-debug:
+    name: Build iOS Debug for Simulator
     environment:
       flutter: stable
       xcode: latest
-      cocoapods: default
     scripts:
-      - name: Flutter pub get
+      - name: Clean Flutter & iOS build
         script: |
           flutter clean
+          rm -rf ios/Pods
+          rm -rf ios/Podfile.lock
+          cd ios
+          pod deintegrate
+          cd ..
+      - name: Get Flutter dependencies
+        script: |
           flutter pub get
-
-      - name: Clean CocoaPods and reinstall
+      - name: Install CocoaPods
         script: |
           cd ios
-          rm -rf Pods Podfile.lock .symlinks Flutter/Flutter.framework
-          pod deintegrate || true
           pod install
           cd ..
-
-      - name: Build iOS for simulator
+      - name: Build iOS debug (simulator)
         script: |
           flutter build ios --debug --no-codesign --simulator
-
-    artifacts:
-      - build/ios/Debug-iphonesimulator/*.app
