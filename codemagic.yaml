@@ -4,6 +4,9 @@ workflows:
     environment:
       flutter: stable
       xcode: latest
+    cache:
+      cache_paths: []  # Tắt toàn bộ cache
+
     scripts:
       - name: Clean Flutter & iOS build
         script: |
@@ -11,17 +14,22 @@ workflows:
           rm -rf ios/Pods
           rm -rf ios/Podfile.lock
           cd ios
-          pod deintegrate
+          pod deintegrate || true
           cd ..
+
       - name: Precache Flutter artifacts
         script: flutter precache --ios
+
       - name: Get Flutter dependencies
         script: flutter pub get
+
       - name: Update Pod repo & install
         script: |
           cd ios
           pod repo update
           pod install
           cd ..
+
       - name: Build iOS debug (simulator)
         script: flutter build ios --debug --no-codesign --simulator
+
