@@ -13,14 +13,15 @@ workflows:
           cd ios
           pod deintegrate
           cd ..
+      - name: Precache Flutter artifacts
+        script: flutter precache --ios
       - name: Get Flutter dependencies
-        script: |
-          flutter pub get
-      - name: Install CocoaPods
+        script: flutter pub get
+      - name: Update Pod repo & install
         script: |
           cd ios
+          pod repo update
           pod install
           cd ..
       - name: Build iOS debug (simulator)
-        script: |
-          flutter build ios --debug --no-codesign --simulator
+        script: flutter build ios --debug --no-codesign --simulator
