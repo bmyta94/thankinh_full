@@ -7,11 +7,14 @@ workflows:
     scripts:
       - name: Install Flutter dependencies
         script: |
+          flutter clean
           flutter pub get
       - name: Install CocoaPods
         script: |
           cd ios
-          rm -rf Pods Podfile.lock
+          rm -rf Pods
+          rm -f Podfile.lock
+          pod repo update
           pod install
           cd ..
       - name: Build iOS for Simulator
