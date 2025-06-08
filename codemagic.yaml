@@ -1,17 +1,20 @@
 workflows:
-  ios-build:
-    name: Build iOS Debug
+  ios-simulator-build:
+    name: Build iOS Debug for Simulator
     environment:
       flutter: stable
       xcode: latest
     scripts:
-      - name: Get dependencies
+      - name: Install Flutter dependencies
         script: |
           flutter pub get
+      - name: Install CocoaPods
+        script: |
           cd ios
+          rm -rf Pods Podfile.lock
           pod install
           cd ..
-      - name: Build iOS
+      - name: Build iOS for Simulator
         script: |
           flutter build ios --debug --no-codesign --simulator
     artifacts:
