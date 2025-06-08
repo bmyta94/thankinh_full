@@ -1,24 +1,33 @@
 workflows:
-  ios-simulator-build:
-    name: Build iOS Debug for Simulator
+  ios-workflow:
+    name: Build iOS
+    max_build_duration: 15
     environment:
       flutter: stable
       xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.company.awesomeApp"
     scripts:
-      - name: Install Flutter dependencies
+      - name: Flutter clean & get
         script: |
           flutter clean
           flutter pub get
-      - name: Install CocoaPods
+
+      - name: Clean CocoaPods & reinstall
         script: |
           cd ios
           rm -rf Pods
+          rm -rf .symlinks
+          rm -rf Flutter/Flutter.framework
           rm -f Podfile.lock
-          pod repo update
+          pod deintegrate || true
           pod install
           cd ..
-      - name: Build iOS for Simulator
+
+      - name: Build iOS debug (simulator)
         script: |
           flutter build ios --debug --no-codesign --simulator
+
     artifacts:
-      - build/ios/iphonesimulator/*.app
+      - build/ios/Debug-iphonesimulator/*.app
